@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
 
         if (!user) {
             return NextResponse.json(
-                { message: "User not found" },
+                { message: "Invalid token" },
                 { status: 400 }
             )
         }
