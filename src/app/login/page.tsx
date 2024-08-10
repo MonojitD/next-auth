@@ -11,6 +11,8 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [emailSend, setEmailSend] = useState("");
   const [forgot, setForgot] = useState(false);
+  const [jumpModal, setJumpModal] = useState(false);
+  const [searchWord, setSearchWord] = useState("");
   const router = useRouter();
   const [user, setUser] = React.useState({
     email: "",
@@ -61,6 +63,19 @@ export default function LoginPage() {
     }
   };
 
+  const onSearch = () => {
+    let formattedSearchWord = searchWord
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+      .join('+');
+
+      const url = `https://1337x.to/sort-search/${formattedSearchWord}/seeders/desc/1`;
+      // const url = `https://www.google.com/search?q=${formattedSearchWord}`;
+      window.open(url, '_blank');
+    
+    console.log(formattedSearchWord);
+  }
+
   useEffect(() => {
     if (user.email.length > 0 && user.password.length > 0) {
       setButtonDisabled(false);
@@ -81,8 +96,10 @@ export default function LoginPage() {
   return (
     <div className="flex w-full h-screen items-center justify-center">
       {forgot ? (
+        //Forgot password modal
+        <>
         <div className="flex flex-col justify-center items-center bg-gray-500/10 max-h-screen p-4">
-          <h1 className="text-2xl">
+          <h1 className="text-2xl" onClick={() => setJumpModal(true)}>
             {loading ? "Processing.." : "Forgot password"}
           </h1>
 
@@ -123,6 +140,29 @@ export default function LoginPage() {
             </span>
           </p>
         </div>
+
+        {jumpModal && 
+        <div className="w-full h-full absolute top-0 left-0 flex justify-center items-center backdrop-blur-[10px]">
+          <div className="border-0 border-blue-500 flex flex-col p-5">
+          <h1 onClick={() => setJumpModal(false)}>Hello</h1>
+                <input
+                    className="px-3 py-2 bg-transparent border border-gray-800"
+                    type="email"
+                    id="email"
+                    value={searchWord}
+                    onChange={(e) => setSearchWord( e.target.value )}
+                />
+                {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+                <button
+                    className="bg-white mt-5 text-gray-900 text-sm px-4 py-2 hover:bg-gray-200 cursor-pointer"
+                    onClick={onSearch}
+                >
+                    Go
+                </button>
+            </div>
+        </div>
+        }
+        </>
       ) : (
         <div className="flex flex-col justify-center items-center bg-gray-500/10 max-h-screen p-4">
           <h1 className="text-2xl">{loading ? "Processing.." : "Login"}</h1>
